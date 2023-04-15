@@ -1,55 +1,51 @@
 <template>
-  <v-app>
-    <v-app-bar
-      app
-      color="primary"
-      dark
-    >
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
-
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
-
-      <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
-    </v-app-bar>
-
-    <v-main>
-      <router-view/>
-    </v-main>
-  </v-app>
+  <div id="app">
+    <component :is="layout" />
+  </div>
 </template>
 
 <script>
 
-export default {
-  name: 'App',
 
-  data: () => ({
-    //
-  }),
-};
+import Login from './views/layouts/Login'
+import UserLoading from './views/layouts/UserLoading'
+
+import {mapGetters} from 'vuex'
+
+export default {
+    name: 'App',
+    components: {
+      Login, UserLoading
+    },
+    data: () => ({
+      //
+      user_loading : true,
+    }),
+    computed: {
+      ...mapGetters(['token', 'user']), 
+
+      layout() {
+        if (this.user_loading) {
+          return 'UserLoading'
+        } else if (this.token == undefined) {
+          return 'Login'
+        } else {
+          if (this.user.is_admin) {
+            return 'Admin'
+          } else {
+            return 'User'
+          }
+        }
+      }
+    },
+    async mounted() {
+      try {
+        await this.$store.dispatch('find_token')
+      }
+      catch(e) {
+        console.error(e.message)
+      }
+      this.user_loading = false
+    }
+  };
 </script>
