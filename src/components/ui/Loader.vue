@@ -89,3 +89,9 @@
 }
 
 </style>
+
+<script>
+export default {
+    name: "Loader"
+}
+</script>

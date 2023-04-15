@@ -72,6 +72,8 @@
 
 <script>
 
+import Loader from '../../components/ui/Loader.vue'
+
 export default {
     name: 'Login',
     data: () => ({
@@ -82,6 +84,9 @@ export default {
       error_text: '',
       forgot_password: false
     }),
+    components: {
+        Loader
+    },
     methods: {
       async submit() {
         this.loading = true
